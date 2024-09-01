@@ -13,10 +13,11 @@ class PhoneInput(QWidget):
         super(PhoneInput, self).__init__(parent)
 
         self.__line_edit = QLineEdit(self)
+        self.__line_edit.setPlaceholderText('Phone number')
         self.__line_edit.setValidator(QRegularExpressionValidator(QRegularExpression('[0-9]*')))
 
         self.__combo_box = CountryDropdown(self)
-        self.__combo_box.setIconSize(QSize(24, 24))
+        self.__combo_box.setIconSize(QSize(24, 24))  # TODO: Replace placeholder values
         self.__combo_box.setFocusPolicy(QtCore.Qt.FocusPolicy.NoFocus)
         self.__combo_box.show_popup.connect(self.__popup_shown)
         self.__combo_box.hide_popup.connect(self.__popup_hidden)
@@ -35,8 +36,8 @@ class PhoneInput(QWidget):
         self.__placeholder_color = self.palette().color(QPalette.ColorRole.Shadow)
         self.__placeholder_color_outside = None
         self.__placeholder_color_current = self.__placeholder_color
-        self.__border_width = 2
-        self.__border_radius = 0
+        self.__border_width = 1
+        self.__border_radius = 5
         self.__padding = QMargins()
         self.__hovered_color = None
         self.__hovered_background_color = None
@@ -56,13 +57,13 @@ class PhoneInput(QWidget):
 
     def __calculate_geometry(self):
         self.__line_edit.setFixedSize(self.width(), self.height())
-        self.__combo_box.setFixedSize(self.width() // 3, self.height() - self.__border_width * 2)
+        self.__combo_box.setFixedSize(self.__combo_box.getPreferredWidth(), self.height() - self.__border_width * 2)
         self.__combo_box.move(self.__border_width, self.__border_width)
         self.__combo_box.view().setFixedWidth(self.__combo_box.minimumSizeHint().width())
 
     def __popup_shown(self):
         # TODO: Replace placeholder with real stylesheet
-        self.__line_edit.setStyleSheet('border: 2px solid %s' % (self.__focused_border_color.name()))
+        self.__line_edit.setStyleSheet('border: 1px solid %s; border-radius: %dpx; padding: 0px 0px 0px %dpx' % (self.__focused_border_color.name(), 5, self.__combo_box.width()))
 
     def __popup_hidden(self):
         self.__update_style_sheet()
