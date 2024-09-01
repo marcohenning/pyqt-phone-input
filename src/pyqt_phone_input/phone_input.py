@@ -129,7 +129,7 @@ class PhoneInput(QWidget):
 
     def enterEvent(self, event):
         if not self.__line_edit.hasFocus() and not self.__combo_box.hasFocus():
-            self.__line_edit.setStyleSheet('QLineEdit {border: 1px solid %s; border-radius: 5px;}' % self.__hovered_border_color.name())
+            self.__line_edit.setStyleSheet('QLineEdit {border: 1px solid %s; border-radius: 5px; padding: 0px 0px 0px %dpx}' % (self.__hovered_border_color.name(), self.__padding.left() + self.__combo_box.width()))
             self.__line_edit.setCurrentBorderColor(self.__hovered_border_color)
 
     def leaveEvent(self, event):

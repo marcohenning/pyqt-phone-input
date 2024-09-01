@@ -31,7 +31,10 @@ class PhoneLineEdit(QLineEdit):
 
     def focusOutEvent(self, event):
         super().focusOutEvent(event)
-        self.__border_color_current = self.__border_color
+        if self.underMouse():
+            self.__border_color_current = self.__hovered_border_color
+        else:
+            self.__border_color_current = self.__border_color
 
     def setCountryDropdown(self, country_dropdown: CountryDropdown):
         self.__country_dropdown = country_dropdown
