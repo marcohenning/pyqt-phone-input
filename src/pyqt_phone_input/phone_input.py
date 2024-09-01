@@ -1,7 +1,10 @@
-from qtpy.QtCore import QRegularExpression, QMargins
-from qtpy.QtGui import QRegularExpressionValidator, QColor, QPalette
+import os
+from PyQt6 import QtCore
+from qtpy.QtCore import QRegularExpression, QMargins, QSize
+from qtpy.QtGui import QRegularExpressionValidator, QColor, QPalette, QIcon
 from qtpy.QtWidgets import QWidget, QLineEdit
 from .country_dropdown import CountryDropdown
+from .countries import countries
 
 
 class PhoneInput(QWidget):
@@ -13,10 +16,19 @@ class PhoneInput(QWidget):
         self.__line_edit.setValidator(QRegularExpressionValidator(QRegularExpression('[0-9]*')))
 
         self.__combo_box = CountryDropdown(self)
+        self.__combo_box.setIconSize(QSize(24, 24))
+        self.__combo_box.setFocusPolicy(QtCore.Qt.FocusPolicy.NoFocus)
         self.__combo_box.show_popup.connect(self.__popup_shown)
         self.__combo_box.hide_popup.connect(self.__popup_hidden)
-        self.__combo_box.addItems(['US', 'UK', 'GER'])
 
+        # Add countries to dropdown
+        self.__directory = os.path.dirname(os.path.realpath(__file__))
+        for country in countries:
+            self.__combo_box.addItem(
+                QIcon(self.__directory + '/flag_icons/{}.png'.format(country)),
+                '{} ({})'.format(countries[country][0], countries[country][1]))
+
+        # Styling options
         self.__color = QColor(0, 0, 0)
         self.__background_color = QColor(255, 255, 255)
         self.__border_color = self.palette().color(QPalette.ColorRole.Shadow)
@@ -46,6 +58,7 @@ class PhoneInput(QWidget):
         self.__line_edit.setFixedSize(self.width(), self.height())
         self.__combo_box.setFixedSize(self.width() // 3, self.height() - self.__border_width * 2)
         self.__combo_box.move(self.__border_width, self.__border_width)
+        self.__combo_box.view().setFixedWidth(self.__combo_box.minimumSizeHint().width())
 
     def __popup_shown(self):
         # TODO: Replace placeholder with real stylesheet
