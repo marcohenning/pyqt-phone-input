@@ -2,8 +2,9 @@ import os
 from PyQt6 import QtCore
 from qtpy.QtCore import QRegularExpression, QMargins, QSize
 from qtpy.QtGui import QRegularExpressionValidator, QColor, QPalette, QIcon
-from qtpy.QtWidgets import QWidget, QLineEdit
+from qtpy.QtWidgets import QWidget
 from .country_dropdown import CountryDropdown
+from .phone_line_edit import PhoneLineEdit
 from .countries import countries
 
 
@@ -12,24 +13,8 @@ class PhoneInput(QWidget):
     def __init__(self, parent=None):
         super(PhoneInput, self).__init__(parent)
 
-        self.__line_edit = QLineEdit(self)
-        self.__line_edit.setPlaceholderText('Phone number')
-        self.__line_edit.setValidator(QRegularExpressionValidator(QRegularExpression('[0-9]*')))
-
-        self.__combo_box = CountryDropdown(self)
-        self.__combo_box.setIconSize(QSize(24, 24))  # TODO: Replace placeholder values
-        self.__combo_box.setFocusPolicy(QtCore.Qt.FocusPolicy.NoFocus)
-        self.__combo_box.show_popup.connect(self.__popup_shown)
-        self.__combo_box.hide_popup.connect(self.__popup_hidden)
-
-        # Add countries to dropdown
-        self.__directory = os.path.dirname(os.path.realpath(__file__))
-        for country in countries:
-            self.__combo_box.addItem(
-                QIcon(self.__directory + '/flag_icons/{}.png'.format(country)),
-                '{} ({})'.format(countries[country][0], countries[country][1]))
-
         # Styling options
+        self.__icon_size = 24
         self.__color = QColor(0, 0, 0)
         self.__background_color = QColor(255, 255, 255)
         self.__border_color = self.palette().color(QPalette.ColorRole.Shadow)
@@ -41,7 +26,7 @@ class PhoneInput(QWidget):
         self.__padding = QMargins()
         self.__hovered_color = None
         self.__hovered_background_color = None
-        self.__hovered_border_color = None
+        self.__hovered_border_color = QColor(255, 0, 0)
         self.__hovered_border_width = None
         self.__focused_color = None
         self.__focused_background_color = None
@@ -51,6 +36,28 @@ class PhoneInput(QWidget):
         self.__disabled_background_color = None
         self.__disabled_border_color = None
         self.__disabled_border_width = None
+
+        # Phone number line edit
+        self.__line_edit = PhoneLineEdit(self)
+        self.__line_edit.setPlaceholderText('Phone number')
+        self.__line_edit.setValidator(QRegularExpressionValidator(QRegularExpression('[0-9]*')))
+
+        # Country dropdown
+        self.__combo_box = CountryDropdown(self)
+        self.__combo_box.setIconSize(QSize(self.__icon_size, self.__icon_size))
+        self.__combo_box.setFocusPolicy(QtCore.Qt.FocusPolicy.NoFocus)
+        self.__combo_box.show_popup.connect(self.__popup_shown)
+        self.__combo_box.hide_popup.connect(self.__popup_hidden)
+
+        # Add countries to dropdown
+        self.__directory = os.path.dirname(os.path.realpath(__file__))
+        for country in countries:
+            self.__combo_box.addItem(
+                QIcon(self.__directory + '/flag_icons/{}.png'.format(country)),
+                '{} ({})'.format(countries[country][0], countries[country][1]))
+
+        self.__line_edit.setCountryDropdown(self.__combo_box)
+        self.__line_edit.focused.connect(self.__line_edit_focused)
 
         self.__calculate_geometry()
         self.__update_style_sheet()
@@ -64,6 +71,9 @@ class PhoneInput(QWidget):
     def __popup_shown(self):
         # TODO: Replace placeholder with real stylesheet
         self.__line_edit.setStyleSheet('border: 1px solid %s; border-radius: %dpx; padding: 0px 0px 0px %dpx' % (self.__focused_border_color.name(), 5, self.__combo_box.width()))
+
+    def __line_edit_focused(self):
+        self.__update_style_sheet()
 
     def __popup_hidden(self):
         self.__update_style_sheet()
@@ -113,8 +123,18 @@ class PhoneInput(QWidget):
                               self.__border_width if self.__disabled_border_width is None else self.__disabled_border_width,
                               self.__border_color.name() if self.__disabled_border_color is None else self.__disabled_border_color.name()))
 
-        self.__combo_box.setStyleSheet('')
-
     def resizeEvent(self, event):
         self.__calculate_geometry()
         self.__update_style_sheet()
+
+    def enterEvent(self, event):
+        if not self.__line_edit.hasFocus() and not self.__combo_box.hasFocus():
+            self.__line_edit.setStyleSheet('QLineEdit {border: 1px solid %s; border-radius: 5px;}' % self.__hovered_border_color.name())
+            self.__line_edit.setCurrentBorderColor(self.__hovered_border_color)
+
+    def leaveEvent(self, event):
+        self.__update_style_sheet()
+        if not self.__line_edit.hasFocus() and not self.__combo_box.hasFocus():
+            self.__line_edit.setCurrentBorderColor(self.__border_color)
+        else:
+            self.__line_edit.setCurrentBorderColor(self.__focused_border_color)
