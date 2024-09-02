@@ -17,13 +17,19 @@ class CountryDropdown(QComboBox):
         self.initStyleOption(self.__style_option)
         self.__style_option.currentText = ''
 
-        self.__preferred_width = 24 + 12
+        self.__icon_size = 0
+        self.__preferred_width = 0
         self.popup_open = False
+
+        self.__calculate_icon_size()
 
     def paintEvent(self, event):
         painter = QPainter(self)
         if self.count() > 0:
-            painter.drawPixmap(5, (self.height() - 24) // 2, self.itemIcon(self.currentIndex()).pixmap(24, 24))
+            painter.drawPixmap((self.height() - self.__icon_size) // 2 + self.__border_width - 1,
+                               (self.height() - self.__icon_size) // 2,
+                               self.itemIcon(self.currentIndex()).pixmap(
+                                   self.__icon_size, self.__icon_size))
 
     def showPopup(self):
         super().showPopup()
@@ -35,5 +41,16 @@ class CountryDropdown(QComboBox):
         self.hide_popup.emit()
         self.popup_open = False
 
+    def resizeEvent(self, event):
+        self.__calculate_icon_size()
+
     def getPreferredWidth(self) -> int:
         return self.__preferred_width
+
+    def setBorderWidth(self, width: int):
+        self.__border_width = width
+
+    def __calculate_icon_size(self):
+        self.__icon_size = int(self.height() * 0.7)
+        self.__preferred_width = self.height()
+        self.setFixedWidth(self.height())

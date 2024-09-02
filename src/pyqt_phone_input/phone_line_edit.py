@@ -19,7 +19,10 @@ class PhoneLineEdit(QLineEdit):
         if self.__country_dropdown:
             painter = QPainter(self)
             painter.setPen(self.__border_color_current)
-            painter.drawLine(self.__country_dropdown.width() + 1, 0, self.__country_dropdown.width() + 1, self.height())
+            x = self.__country_dropdown.width() + self.__border_width * 2
+
+            for i in range(self.__border_width):
+                painter.drawLine(x + i, 0, x + i, self.height() - 1)
 
     def focusInEvent(self, event):
         super().focusInEvent(event)
@@ -34,3 +37,6 @@ class PhoneLineEdit(QLineEdit):
 
     def setCurrentBorderColor(self, color: QColor):
         self.__border_color_current = color
+
+    def setBorderWidth(self, width: int):
+        self.__border_width = width
