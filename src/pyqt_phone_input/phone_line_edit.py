@@ -1,21 +1,18 @@
-from qtpy.QtGui import QPainter, QPalette, QColor
 from qtpy.QtCore import Signal
+from qtpy.QtGui import QPainter, QPalette, QColor
 from qtpy.QtWidgets import QLineEdit
 from .country_dropdown import CountryDropdown
 
 
 class PhoneLineEdit(QLineEdit):
 
-    focused = Signal()
+    focus_in = Signal()
+    focus_out = Signal()
 
     def __init__(self, parent=None):
         super(PhoneLineEdit, self).__init__(parent)
 
         self.__country_dropdown = None
-        self.__border_color = self.palette().color(QPalette.ColorRole.Shadow)
-        self.__focused_border_color = self.palette().color(QPalette.ColorRole.Highlight)
-        self.__hovered_border_color = QColor(255, 0, 0)
-        self.__border_color_current = self.__border_color
 
     def paintEvent(self, event):
         super().paintEvent(event)
@@ -26,15 +23,11 @@ class PhoneLineEdit(QLineEdit):
 
     def focusInEvent(self, event):
         super().focusInEvent(event)
-        self.focused.emit()
-        self.__border_color_current = self.__focused_border_color
+        self.focus_in.emit()
 
     def focusOutEvent(self, event):
         super().focusOutEvent(event)
-        if self.underMouse():
-            self.__border_color_current = self.__hovered_border_color
-        else:
-            self.__border_color_current = self.__border_color
+        self.focus_out.emit()
 
     def setCountryDropdown(self, country_dropdown: CountryDropdown):
         self.__country_dropdown = country_dropdown

@@ -18,16 +18,9 @@ class PhoneInput(QWidget):
         self.__color = QColor(0, 0, 0)
         self.__background_color = QColor(255, 255, 255)
         self.__border_color = self.palette().color(QPalette.ColorRole.Shadow)
-        self.__placeholder_color = self.palette().color(QPalette.ColorRole.Shadow)
-        self.__placeholder_color_outside = None
-        self.__placeholder_color_current = self.__placeholder_color
         self.__border_width = 1
-        self.__border_radius = 5
+        self.__border_radius = 2
         self.__padding = QMargins()
-        self.__hovered_color = None
-        self.__hovered_background_color = None
-        self.__hovered_border_color = QColor(255, 0, 0)
-        self.__hovered_border_width = None
         self.__focused_color = None
         self.__focused_background_color = None
         self.__focused_border_color = self.palette().color(QPalette.ColorRole.Highlight)
@@ -57,7 +50,8 @@ class PhoneInput(QWidget):
                 '{} ({})'.format(countries[country][0], countries[country][1]))
 
         self.__line_edit.setCountryDropdown(self.__combo_box)
-        self.__line_edit.focused.connect(self.__line_edit_focused)
+        self.__line_edit.focus_in.connect(self.__update_line_edit_focus_in)
+        self.__line_edit.focus_out.connect(self.__update_line_edit_focus_out)
 
         self.__calculate_geometry()
         self.__update_style_sheet()
@@ -70,13 +64,20 @@ class PhoneInput(QWidget):
 
     def __popup_shown(self):
         # TODO: Replace placeholder with real stylesheet
-        self.__line_edit.setStyleSheet('border: 1px solid %s; border-radius: %dpx; padding: 0px 0px 0px %dpx' % (self.__focused_border_color.name(), 5, self.__combo_box.width()))
-
-    def __line_edit_focused(self):
-        self.__update_style_sheet()
+        self.__line_edit.setStyleSheet('border: 1px solid %s; border-radius: 5px; padding: 0px 0px 0px %dpx' % (self.__focused_border_color.name(), self.__combo_box.width()))
+        self.__line_edit.setCurrentBorderColor(self.__focused_border_color)
 
     def __popup_hidden(self):
         self.__update_style_sheet()
+        if not self.__line_edit.hasFocus():
+            self.__line_edit.setCurrentBorderColor(self.__border_color)
+
+    def __update_line_edit_focus_in(self):
+        self.__line_edit.setCurrentBorderColor(self.__focused_border_color)
+
+    def __update_line_edit_focus_out(self):
+        if not self.__combo_box.popup_open:
+            self.__line_edit.setCurrentBorderColor(self.__border_color)
 
     def __update_style_sheet(self):
         self.__line_edit.setStyleSheet('QLineEdit {'
@@ -85,11 +86,6 @@ class PhoneInput(QWidget):
                            'border: %dpx solid %s;'
                            'border-radius: %dpx;'
                            'padding: %d %d %d %dpx;'
-                           '}'
-                           'QLineEdit:hover {'
-                           'color: %s;'
-                           'background-color: %s;'
-                           'border: %dpx solid %s;'
                            '}'
                            'QLineEdit:focus {'
                            'color: %s;'
@@ -110,10 +106,6 @@ class PhoneInput(QWidget):
                               self.__padding.right(),
                               self.__padding.bottom(),
                               self.__padding.left() + self.__combo_box.width(),
-                              self.__color.name() if self.__hovered_color is None else self.__hovered_color.name(),
-                              self.__background_color.name() if self.__hovered_background_color is None else self.__hovered_background_color.name(),
-                              self.__border_width if self.__hovered_border_width is None else self.__hovered_border_width,
-                              self.__border_color.name() if self.__hovered_border_color is None else self.__hovered_border_color.name(),
                               self.__color.name() if self.__focused_color is None else self.__focused_color.name(),
                               self.__background_color.name() if self.__focused_background_color is None else self.__focused_background_color.name(),
                               self.__border_width if self.__focused_border_width is None else self.__focused_border_width,
@@ -126,15 +118,3 @@ class PhoneInput(QWidget):
     def resizeEvent(self, event):
         self.__calculate_geometry()
         self.__update_style_sheet()
-
-    def enterEvent(self, event):
-        if not self.__line_edit.hasFocus() and not self.__combo_box.hasFocus():
-            self.__line_edit.setStyleSheet('QLineEdit {border: 1px solid %s; border-radius: 5px; padding: 0px 0px 0px %dpx}' % (self.__hovered_border_color.name(), self.__padding.left() + self.__combo_box.width()))
-            self.__line_edit.setCurrentBorderColor(self.__hovered_border_color)
-
-    def leaveEvent(self, event):
-        self.__update_style_sheet()
-        if not self.__line_edit.hasFocus() and not self.__combo_box.hasFocus():
-            self.__line_edit.setCurrentBorderColor(self.__border_color)
-        else:
-            self.__line_edit.setCurrentBorderColor(self.__focused_border_color)

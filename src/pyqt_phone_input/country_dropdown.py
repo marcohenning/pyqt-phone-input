@@ -18,6 +18,7 @@ class CountryDropdown(QComboBox):
         self.__style_option.currentText = ''
 
         self.__preferred_width = 24 + 12
+        self.popup_open = False
 
     def paintEvent(self, event):
         painter = QPainter(self)
@@ -27,10 +28,12 @@ class CountryDropdown(QComboBox):
     def showPopup(self):
         super().showPopup()
         self.show_popup.emit()
+        self.popup_open = True
         
     def hidePopup(self):
         super().hidePopup()
         self.hide_popup.emit()
+        self.popup_open = False
 
     def getPreferredWidth(self) -> int:
         return self.__preferred_width
