@@ -130,3 +130,14 @@ class PhoneInput(QWidget):
     def resizeEvent(self, event):
         self.__calculate_geometry()
         self.__update_style_sheet()
+
+    def setDisabled(self, disabled: bool):
+        self.__update_style_sheet()
+        self.__line_edit.setDisabled(disabled)
+        self.__combo_box.setDisabled(disabled)
+
+        if disabled:
+            self.__line_edit.setCurrentBorderColor(
+                self.__border_color if self.__disabled_border_color is None else self.__disabled_border_color)
+        else:
+            self.__line_edit.setCurrentBorderColor(self.__border_color)
