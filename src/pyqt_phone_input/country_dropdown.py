@@ -1,7 +1,9 @@
+import math
+
 from qtpy import QtCore
 from qtpy.QtCore import Signal
 from qtpy.QtGui import QPainter, QFont, QFontMetrics
-from qtpy.QtWidgets import QComboBox, QStyleOptionComboBox
+from qtpy.QtWidgets import QComboBox
 
 
 class CountryDropdown(QComboBox):
@@ -18,6 +20,7 @@ class CountryDropdown(QComboBox):
         self.__input_font = self.font()
         self.__font_metrics_input = QFontMetrics(self.font())
         self.__icon_size = 0
+        self.__border_width = 0
         self.popup_open = False
         self.__current_country_code = ''
 
@@ -32,9 +35,9 @@ class CountryDropdown(QComboBox):
         painter.setFont(self.__input_font)
 
         if self.count() > 0:
-            x_start = (self.height() - self.__icon_size) // 2 + self.__border_width - 1
-            buffer_left = (self.height() - self.__icon_size) // 2
-            painter.drawPixmap(x_start, buffer_left, self.itemIcon(
+            buffer_left = math.ceil((self.height() - self.__icon_size) / 2) + self.__border_width
+            x_start = buffer_left + self.__border_width - 1
+            painter.drawPixmap(x_start, buffer_left - self.__border_width, self.itemIcon(
                 self.currentIndex()).pixmap(self.__icon_size, self.__icon_size))
             painter.drawText(x_start + self.__icon_size + buffer_left // 2,
                              self.height() - int((self.height() - self.__font_metrics_input.tightBoundingRect(
@@ -67,7 +70,7 @@ class CountryDropdown(QComboBox):
     def __calculate_geometry(self):
         self.__font_metrics_input = QFontMetrics(self.__input_font)
         self.__icon_size = int(self.height() * 0.7)
-        buffer_left = (self.height() - self.__icon_size) // 2
+        buffer_left = math.ceil((self.height() - self.__icon_size) / 2) + self.__border_width
         self.setFixedWidth(self.height() + self.__font_metrics_input.tightBoundingRect(self.__current_country_code).width() + buffer_left // 2)
         self.geometry_changed.emit()
         self.update()

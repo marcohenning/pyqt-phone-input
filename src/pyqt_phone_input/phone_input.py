@@ -66,8 +66,7 @@ class PhoneInput(QWidget):
 
     def __calculate_geometry(self):
         self.__line_edit.setFixedSize(self.width(), self.height())
-        self.__combo_box.setFixedHeight(self.height() - self.__border_width * 2)
-        self.__combo_box.move(self.__border_width, self.__border_width)
+        self.__combo_box.setFixedHeight(self.height())
         self.__combo_box.view().setFixedWidth(self.__combo_box.minimumSizeHint().width())
 
     def __popup_shown(self):
