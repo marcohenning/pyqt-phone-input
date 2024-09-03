@@ -1,6 +1,6 @@
 import os
-from PyQt6 import QtCore
-from qtpy.QtCore import QRegularExpression, QMargins
+from qtpy import QtCore
+from qtpy.QtCore import QRegularExpression, QMargins, Qt
 from qtpy.QtGui import QRegularExpressionValidator, QColor, QPalette, QIcon, QFont
 from qtpy.QtWidgets import QWidget
 from .country_dropdown import CountryDropdown
@@ -19,15 +19,20 @@ class PhoneInput(QWidget):
         self.__border_color = self.palette().color(QPalette.ColorRole.Shadow)
         self.__border_width = 1
         self.__border_radius = 3
-        self.__padding = QMargins()
+        self.__padding = QMargins(2, 0, 0, 0)
         self.__selection_foreground_color = None
-        self.__selection_background_color = QColor(255,0,0)#self.palette().color(QPalette.ColorRole.Highlight)
+        self.__selection_background_color = self.palette().color(QPalette.ColorRole.Highlight)
         self.__focused_color = None
         self.__focused_background_color = None
         self.__focused_border_color = self.palette().color(QPalette.ColorRole.Highlight)
         self.__disabled_color = None
         self.__disabled_background_color = None
         self.__disabled_border_color = None
+        self.__dropdown_item_height_dynamic = True
+        self.__dropdown_item_height = 0
+        self.__dropdown_item_selection_color = QColor(255, 255, 255)
+        self.__dropdown_item_selection_background_color = self.palette().color(QPalette.ColorRole.Highlight)
+        self.__dropdown_border_color = None
 
         # Phone number line edit
         self.__line_edit = PhoneLineEdit(self)
@@ -39,6 +44,7 @@ class PhoneInput(QWidget):
         self.__combo_box = CountryDropdown(self)
         self.__combo_box.setBorderWidth(self.__border_width)
         self.__combo_box.setFocusPolicy(QtCore.Qt.FocusPolicy.NoFocus)
+        self.__combo_box.view().setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.__combo_box.show_popup.connect(self.__popup_shown)
         self.__combo_box.hide_popup.connect(self.__popup_hidden)
         self.__combo_box.geometry_changed.connect(self.__update_style_sheet)
@@ -56,6 +62,7 @@ class PhoneInput(QWidget):
 
         self.__calculate_geometry()
         self.__update_style_sheet()
+        self.__update_combobox_style_sheet()
 
     def __calculate_geometry(self):
         self.__line_edit.setFixedSize(self.width(), self.height())
@@ -154,9 +161,52 @@ class PhoneInput(QWidget):
                               self.__border_width,
                               self.__border_color.name() if self.__disabled_border_color is None else self.__disabled_border_color.name()))
 
+    def __update_combobox_style_sheet(self):
+        dropdown_item_selection_color = None
+        if self.__dropdown_item_selection_color:
+            dropdown_item_selection_color = self.__dropdown_item_selection_color
+        elif self.__focused_color:
+            dropdown_item_selection_color = self.__focused_color
+        else:
+            dropdown_item_selection_color = self.__color
+
+        dropdown_border_color = None
+        if self.__dropdown_border_color:
+            dropdown_border_color = self.__dropdown_border_color
+        elif self.__focused_border_color:
+            dropdown_border_color = self.__focused_border_color
+        else:
+            dropdown_border_color = self.__border_color
+
+        self.__combo_box.setStyleSheet('QComboBox QAbstractItemView {'
+                                       'outline: none;'
+                                       'border: %dpx solid %s;'
+                                       '}'
+                                       'QListView::item {'
+                                       'height: %dpx;'
+                                       'color: %s;'
+                                       'background-color: %s;'
+                                       'border: none;'
+                                       '}'
+                                       'QListView::item:focus {'
+                                       'height: %dpx;'
+                                       'color: %s;'
+                                       'background-color: %s;'
+                                       'border: none;'
+                                       '}'
+                                       % (self.__border_width,
+                                          dropdown_border_color.name(),
+                                          self.height() if self.__dropdown_item_height_dynamic else self.__dropdown_item_height,
+                                          self.__color.name() if self.__focused_color is None else self.__focused_color.name(),
+                                          self.__background_color.name() if self.__focused_background_color is None else self.__focused_background_color.name(),
+                                          self.height() if self.__dropdown_item_height_dynamic else self.__dropdown_item_height,
+                                          dropdown_item_selection_color.name(),
+                                          self.__dropdown_item_selection_background_color.name()))
+
     def resizeEvent(self, event):
         self.__calculate_geometry()
         self.__update_style_sheet()
+        self.__update_combobox_style_sheet()
 
     def setDisabled(self, disabled: bool):
         self.__line_edit.setDisabled(disabled)

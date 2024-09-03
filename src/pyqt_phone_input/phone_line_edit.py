@@ -1,5 +1,5 @@
 from qtpy.QtCore import Signal
-from qtpy.QtGui import QPainter, QPalette, QColor
+from qtpy.QtGui import QPainter, QColor
 from qtpy.QtWidgets import QLineEdit
 from .country_dropdown import CountryDropdown
 

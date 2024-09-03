@@ -1,7 +1,6 @@
-import math
 from qtpy import QtCore
 from qtpy.QtCore import Signal
-from PyQt6.QtGui import QPainter, QFont, QFontMetrics
+from qtpy.QtGui import QPainter, QFont, QFontMetrics
 from qtpy.QtWidgets import QComboBox, QStyleOptionComboBox
 
 
@@ -15,9 +14,6 @@ class CountryDropdown(QComboBox):
         super(CountryDropdown, self).__init__(parent)
 
         self.setFocusPolicy(QtCore.Qt.FocusPolicy.NoFocus)
-        self.__style_option = QStyleOptionComboBox()
-        self.initStyleOption(self.__style_option)
-        self.__style_option.currentText = ''
 
         self.__input_font = self.font()
         self.__font_metrics_input = QFontMetrics(self.font())
@@ -41,7 +37,7 @@ class CountryDropdown(QComboBox):
             painter.drawPixmap(x_start, buffer_left, self.itemIcon(
                 self.currentIndex()).pixmap(self.__icon_size, self.__icon_size))
             painter.drawText(x_start + self.__icon_size + buffer_left // 2,
-                             self.height() - math.ceil((self.height() - self.__font_metrics_input.tightBoundingRect(
+                             self.height() - int((self.height() - self.__font_metrics_input.tightBoundingRect(
                                  self.__current_country_code).height()) / 2),
                              self.__current_country_code)
 
