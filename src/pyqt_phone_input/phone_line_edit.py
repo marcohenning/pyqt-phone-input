@@ -1,5 +1,5 @@
-from qtpy.QtCore import Signal
-from qtpy.QtGui import QPainter, QColor
+from qtpy.QtCore import Signal, QRegularExpression
+from qtpy.QtGui import QPainter, QColor, QRegularExpressionValidator
 from qtpy.QtWidgets import QLineEdit
 from .country_dropdown import CountryDropdown
 
@@ -14,8 +14,11 @@ class PhoneLineEdit(QLineEdit):
 
         self.__country_dropdown = None
 
+        self.setValidator(QRegularExpressionValidator(QRegularExpression('[0-9 ]*')))
+
     def paintEvent(self, event):
         super().paintEvent(event)
+
         if self.__country_dropdown:
             painter = QPainter(self)
             painter.setPen(self.__border_color_current)
@@ -37,6 +40,8 @@ class PhoneLineEdit(QLineEdit):
 
     def setCurrentBorderColor(self, color: QColor):
         self.__border_color_current = color
+        self.update()
 
     def setBorderWidth(self, width: int):
         self.__border_width = width
+        self.update()
