@@ -1,5 +1,5 @@
 import os
-from qtpy.QtCore import QMargins
+from qtpy.QtCore import QMargins, Signal
 from qtpy.QtGui import QColor, QPalette, QIcon, QFont
 from qtpy.QtWidgets import QWidget
 from .country_dropdown import CountryDropdown
@@ -8,6 +8,9 @@ from .countries import countries
 
 
 class PhoneInput(QWidget):
+
+    country_changed = Signal()
+    number_changed = Signal()
 
     def __init__(self, parent=None):
         super(PhoneInput, self).__init__(parent)
@@ -40,6 +43,7 @@ class PhoneInput(QWidget):
         # Country dropdown
         self.__country_dropdown = CountryDropdown(self)
         self.__country_dropdown.setBorderWidth(self.__border_width)
+        self.__country_dropdown.currentIndexChanged.connect(self.__handle_country_changed)
         self.__country_dropdown.show_popup.connect(self.__handle_popup_opened)
         self.__country_dropdown.hide_popup.connect(self.__handle_popup_closed)
         self.__country_dropdown.geometry_changed.connect(self.__update_line_edit_style_sheet)
@@ -53,6 +57,7 @@ class PhoneInput(QWidget):
 
         # Set up phone number line edit
         self.__phone_line_edit.setCountryDropdown(self.__country_dropdown)
+        self.__phone_line_edit.textChanged.connect(self.__handle_number_changed)
         self.__phone_line_edit.focus_in.connect(self.__handle_focus_in)
         self.__phone_line_edit.focus_out.connect(self.__handle_focus_out)
 
@@ -65,6 +70,12 @@ class PhoneInput(QWidget):
         self.__phone_line_edit.setFixedSize(self.width(), self.height())
         self.__country_dropdown.setFixedHeight(self.height())
         self.__country_dropdown.view().setFixedWidth(self.__country_dropdown.minimumSizeHint().width())
+
+    def __handle_country_changed(self):
+        self.country_changed.emit()
+
+    def __handle_number_changed(self):
+        self.number_changed.emit()
 
     def __handle_popup_opened(self):
         selection_foreground_color = None
