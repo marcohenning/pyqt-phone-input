@@ -3,6 +3,7 @@ from qtpy import QtCore
 from qtpy.QtCore import Signal, Qt
 from qtpy.QtGui import QPainter, QFont, QFontMetrics
 from qtpy.QtWidgets import QComboBox
+from .countries import countries
 
 
 class CountryDropdown(QComboBox):
@@ -14,9 +15,6 @@ class CountryDropdown(QComboBox):
     def __init__(self, parent=None):
         super(CountryDropdown, self).__init__(parent)
 
-        self.setFocusPolicy(QtCore.Qt.FocusPolicy.NoFocus)
-        self.view().setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
-
         self.__input_font = self.font()
         self.__font_metrics = QFontMetrics(self.font())
         self.__icon_size = 0
@@ -24,9 +22,11 @@ class CountryDropdown(QComboBox):
         self.popup_open = False
         self.__current_country_code = ''
 
-        self.__handle_current_item_changed()
-
+        self.setFocusPolicy(QtCore.Qt.FocusPolicy.NoFocus)
+        self.view().setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.currentTextChanged.connect(self.__handle_current_item_changed)
+
+        self.__handle_current_item_changed()
 
     def paintEvent(self, event):
         painter = QPainter(self)
@@ -55,10 +55,36 @@ class CountryDropdown(QComboBox):
     def resizeEvent(self, event):
         self.__calculate_geometry()
 
+    def getCountry(self) -> str:
+        current_country_name = self.currentText().split(' (')[0]
+
+        for country in countries:
+            if countries[country][0] == current_country_name:
+                return country
+
+    def getCountryCode(self) -> str:
+        return self.__current_country_code
+
+    def setCountry(self, new_country: str):
+        index = 0
+        new_country = new_country.lower()
+
+        for country in countries:
+            if country == new_country:
+                self.setCurrentIndex(index)
+                break
+            index += 1
+
+    def getBorderWidth(self) -> int:
+        return self.__border_width
+
     def setBorderWidth(self, width: int):
         self.__border_width = width
         self.__calculate_geometry()
         self.update()
+
+    def getInputFont(self) -> QFont:
+        return self.__input_font
 
     def setInputFont(self, font: QFont):
         self.__input_font = font

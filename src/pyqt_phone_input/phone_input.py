@@ -207,6 +207,30 @@ class PhoneInput(QWidget):
         self.__update_line_edit_style_sheet()
         self.__update_combobox_style_sheet()
 
+    def getCountry(self) -> str:
+        return self.__country_dropdown.getCountry()
+
+    def getCountryCode(self) -> str:
+        return self.__country_dropdown.getCountryCode()
+
+    def setCountry(self, country: str):
+        self.__country_dropdown.setCountry(country)
+
+    def getPhoneNumber(self) -> str:
+        return self.getCountryCode() + self.__phone_line_edit.text().replace(' ', '')
+
+    def setPhoneNumber(self, phone_number: str):
+        self.__phone_line_edit.setText(phone_number)
+
+    def getPlaceholderText(self) -> str:
+        return self.__phone_line_edit.placeholderText()
+
+    def setPlaceholderText(self, text: str):
+        self.__phone_line_edit.setPlaceholderText(text)
+
+    def getDisabled(self) -> bool:
+        return not self.__country_dropdown.isEnabled()
+
     def setDisabled(self, disabled: bool):
         self.__phone_line_edit.setDisabled(disabled)
         self.__country_dropdown.setDisabled(disabled)
@@ -222,13 +246,267 @@ class PhoneInput(QWidget):
             else:
                 self.__phone_line_edit.setCurrentBorderColor(self.__border_color)
 
-    def setSelectionForegroundColor(self, color: QColor):
+    def getColor(self) -> QColor:
+        """Get the current text color
+
+        :return: text color
+        """
+
+        return self.__color
+
+    def setColor(self, color: QColor):
+        """Set the text color
+
+        :param color: new text color
+        """
+
+        self.__color = color
+        self.__update_line_edit_style_sheet()
+        self.__update_combobox_style_sheet()
+
+    def getBackgroundColor(self) -> QColor:
+        """Get the current background color
+
+        :return: background color
+        """
+
+        return self.__background_color
+
+    def setBackgroundColor(self, color: QColor):
+        """Set the background color
+
+        :param color: new background color
+        """
+
+        self.__background_color = color
+        self.__update_line_edit_style_sheet()
+        self.__update_combobox_style_sheet()
+
+    def getBorderColor(self) -> QColor:
+        """Get the current border color
+
+        :return: border color
+        """
+
+        return self.__border_color
+
+    def setBorderColor(self, color: QColor):
+        """Set the border color
+
+        :param color: new border color
+        """
+
+        self.__border_color = color
+        self.__update_line_edit_style_sheet()
+        self.__update_combobox_style_sheet()
+
+    def getBorderWidth(self) -> int:
+        """Get the current border width
+
+        :return: border width
+        """
+
+        return self.__border_width
+
+    def setBorderWidth(self, width: int):
+        """Set the border width
+
+        :param width: new border width
+        """
+
+        self.__border_width = width
+        self.__phone_line_edit.setBorderWidth(width)
+        self.__country_dropdown.setBorderWidth(width)
+        self.__update_line_edit_style_sheet()
+        self.__update_combobox_style_sheet()
+
+    def getBorderRadius(self) -> int:
+        """Get the current border radius
+
+        :return: border radius
+        """
+
+        return self.__border_radius
+
+    def setBorderRadius(self, radius: int):
+        """Set the border radius
+
+        :param radius: new border radius
+        """
+
+        self.__border_radius = radius
+        self.__update_line_edit_style_sheet()
+        self.__update_combobox_style_sheet()
+
+    def getPadding(self) -> QMargins:
+        """Get the current padding of the widget
+
+        :return: current padding
+        """
+
+        return self.__padding
+
+    def setPadding(self, padding: QMargins):
+        """Set the padding of the widget
+
+        :param padding: padding of the widget
+        """
+
+        self.__padding = padding
+        self.__update_line_edit_style_sheet()
+        self.__update_combobox_style_sheet()
+
+    def getFocusedColor(self) -> QColor:
+        """Get the current focused text color
+
+        :return: focused text color
+        """
+
+        return self.__focused_color
+
+    def setFocusedColor(self, color: QColor):
+        """Set the focused text color
+
+        :param color: new focused text color
+        """
+
+        self.__focused_color = color
+        self.__update_line_edit_style_sheet()
+        self.__update_combobox_style_sheet()
+
+    def getFocusedBackgroundColor(self) -> QColor:
+        """Get the current focused background color
+
+        :return: focused background color
+        """
+
+        return self.__focused_background_color
+
+    def setFocusedBackgroundColor(self, color: QColor):
+        """Set the focused background color
+
+        :param color: new focused background color
+        """
+
+        self.__focused_background_color = color
+        self.__update_line_edit_style_sheet()
+        self.__update_combobox_style_sheet()
+
+    def getFocusedBorderColor(self) -> QColor:
+        """Get the current focused border color
+
+        :return: focused border color
+        """
+
+        return self.__focused_border_color
+
+    def setFocusedBorderColor(self, color: QColor):
+        """Set the focused border color
+
+        :param color: new focused border color
+        """
+
+        self.__focused_border_color = color
+        self.__update_line_edit_style_sheet()
+        self.__update_combobox_style_sheet()
+
+    def getDisabledColor(self) -> QColor:
+        """Get the current disabled text color
+
+        :return: disabled text color
+        """
+
+        return self.__disabled_color
+
+    def setDisabledColor(self, color: QColor):
+        """Set the disabled text color
+
+        :param color: new disabled text color
+        """
+
+        self.__disabled_color = color
+        self.__update_line_edit_style_sheet()
+        self.__update_combobox_style_sheet()
+
+    def getDisabledBackgroundColor(self) -> QColor:
+        """Get the current disabled background color
+
+        :return: disabled background color
+        """
+
+        return self.__disabled_background_color
+
+    def setDisabledBackgroundColor(self, color: QColor):
+        """Set the disabled background color
+
+        :param color: new disabled background color
+        """
+
+        self.__disabled_background_color = color
+        self.__update_line_edit_style_sheet()
+        self.__update_combobox_style_sheet()
+
+    def getDisabledBorderColor(self) -> QColor:
+        """Get the current disabled border color
+
+        :return: disabled border color
+        """
+
+        return self.__disabled_border_color
+
+    def setDisabledBorderColor(self, color: QColor):
+        """Set the disabled border color
+
+        :param color: new disabled border color
+        """
+
+        self.__disabled_border_color = color
+        self.__update_line_edit_style_sheet()
+        self.__update_combobox_style_sheet()
+
+    def getTextSelectionForegroundColor(self) -> QColor:
+        return self.__selection_foreground_color
+
+    def setTextSelectionForegroundColor(self, color: QColor):
         self.__selection_foreground_color = color
         self.__update_line_edit_style_sheet()
 
-    def setSelectionBackgroundColor(self, color: QColor):
+    def getTextSelectionBackgroundColor(self) -> QColor:
+        return self.__selection_background_color
+
+    def setTextSelectionBackgroundColor(self, color: QColor):
         self.__selection_background_color = color
         self.__update_line_edit_style_sheet()
+
+    def getDropdownItemHeightDynamic(self) -> bool:
+        return self.__dropdown_item_height_dynamic
+
+    def setDropdownItemHeightDynamic(self, dynamic: bool):
+        self.__dropdown_item_height_dynamic = dynamic
+
+    def getDropdownItemHeight(self) -> int:
+        return self.__dropdown_item_height
+
+    def setDropdownItemHeight(self, height: int):
+        self.__dropdown_item_height = height
+
+    def getDropdownItemSelectionForegroundColor(self) -> QColor:
+        return self.__dropdown_item_selection_color
+
+    def setDropdownItemSelectionForegroundColor(self, color: QColor):
+        self.__dropdown_item_selection_color = color
+
+    def getDropdownItemSelectionBackgroundColor(self) -> QColor:
+        return self.__dropdown_item_selection_background_color
+
+    def setDropdownItemSelectionBackgroundColor(self, color: QColor):
+        self.__dropdown_item_selection_background_color = color
+
+    def getDropdownBorderColor(self) -> QColor:
+        return self.__dropdown_border_color
+
+    def setDropdownBorderColor(self, color: QColor):
+        self.__dropdown_border_color = color
 
     def setFont(self, font: QFont):
         self.__phone_line_edit.setFont(font)

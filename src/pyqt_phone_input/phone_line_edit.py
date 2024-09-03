@@ -35,12 +35,21 @@ class PhoneLineEdit(QLineEdit):
         super().focusOutEvent(event)
         self.focus_out.emit()
 
+    def getCountryDropdown(self) -> CountryDropdown:
+        return self.__country_dropdown
+
     def setCountryDropdown(self, country_dropdown: CountryDropdown):
         self.__country_dropdown = country_dropdown
+
+    def getCurrentBorderColor(self) -> QColor:
+        return self.__border_color_current
 
     def setCurrentBorderColor(self, color: QColor):
         self.__border_color_current = color
         self.update()
+
+    def getBorderWidth(self) -> int:
+        return self.__border_width
 
     def setBorderWidth(self, width: int):
         self.__border_width = width
