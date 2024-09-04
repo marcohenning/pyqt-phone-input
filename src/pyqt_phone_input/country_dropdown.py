@@ -2,8 +2,8 @@ import os
 import math
 from qtpy import QtCore
 from qtpy.QtCore import Signal, Qt
-from qtpy.QtGui import QPainter, QFont, QFontMetrics, QIcon
-from qtpy.QtWidgets import QComboBox
+from qtpy.QtGui import QPainter, QIcon
+from qtpy.QtWidgets import QComboBox, QLineEdit
 from .countries import countries
 
 
@@ -22,9 +22,10 @@ class CountryDropdown(QComboBox):
 
         super(CountryDropdown, self).__init__(parent)
 
+        # Connected LineEdit used to display phone code
+        self.__phone_code_line_edit = None
+
         # Initial values
-        self.__input_font = self.font()
-        self.__font_metrics = QFontMetrics(self.font())
         self.__icon_size = 0
         self.__border_width = 0
         self.__popup_open = False
@@ -53,23 +54,13 @@ class CountryDropdown(QComboBox):
         """
 
         painter = QPainter(self)
-        painter.setFont(self.__input_font)
 
         if self.count() > 0:
-
-            # Calculate geometry
-            buffer_left = math.ceil((self.height() - self.__icon_size) / 2) + self.__border_width
-            x_start = buffer_left + self.__border_width - 1
+            icon_start = math.ceil((self.height() - self.__icon_size) / 2)
 
             # Draw country flag icon
-            painter.drawPixmap(x_start, buffer_left - self.__border_width, self.itemIcon(
+            painter.drawPixmap(icon_start, icon_start, self.itemIcon(
                 self.currentIndex()).pixmap(self.__icon_size, self.__icon_size))
-
-            # Draw country phone code
-            painter.drawText(x_start + self.__icon_size + buffer_left // 2,
-                             self.height() - int((self.height() - self.__font_metrics.tightBoundingRect(
-                                 self.__current_country_code).height()) / 2),
-                             self.__current_country_code)
 
     def showPopup(self):
         """Method that gets called when the dropdown is opened"""
@@ -92,6 +83,22 @@ class CountryDropdown(QComboBox):
         """
 
         self.__calculate_geometry()
+
+    def getPhoneCodeLineEdit(self) -> QLineEdit:
+        """Get the current phone code LineEdit
+
+        :return: phone code LineEdit
+        """
+
+        return self.__phone_code_line_edit
+
+    def setPhoneCodeLineEdit(self, line_edit: QLineEdit):
+        """Set the phone code LineEdit
+
+        :param line_edit: new phone code LineEdit
+        """
+
+        self.__phone_code_line_edit = line_edit
 
     def getCountry(self) -> str:
         """Get the current country
@@ -146,24 +153,6 @@ class CountryDropdown(QComboBox):
         self.__calculate_geometry()
         self.update()
 
-    def getInputFont(self) -> QFont:
-        """Get the current font used for the current dropdown item
-
-        :return: font used for the current dropdown item
-        """
-
-        return self.__input_font
-
-    def setInputFont(self, font: QFont):
-        """Set the font used for the current dropdown item
-
-        :param font: new font used for the current dropdown item
-        """
-
-        self.__input_font = font
-        self.__calculate_geometry()
-        self.update()
-
     def isDropdownOpen(self) -> bool:
         """Gets whether the dropdown is currently opened
 
@@ -175,12 +164,24 @@ class CountryDropdown(QComboBox):
     def __calculate_geometry(self):
         """Calculates everything related to widget geometry"""
 
-        self.__font_metrics = QFontMetrics(self.__input_font)
-        self.__icon_size = int(self.height() * 0.7)
-        buffer_left = math.ceil((self.height() - self.__icon_size) / 2) + self.__border_width
-        self.setFixedWidth(self.height() + self.__font_metrics.tightBoundingRect(self.__current_country_code).width() + buffer_left // 2)
-        self.geometry_changed.emit()
-        self.update()
+        self.__icon_size = int((self.height() - self.__border_width * 2) * 0.7)
+        icon_start = math.ceil((self.height() - self.__icon_size) / 2)
+        text_start = icon_start + (icon_start - self.__border_width) // 5 + self.__icon_size
+
+        if self.__phone_code_line_edit:
+            if self.__phone_code_line_edit.text() != self.__current_country_code:
+                self.__phone_code_line_edit.setText(self.__current_country_code)
+
+            w = self.__phone_code_line_edit.fontMetrics().tightBoundingRect(self.__phone_code_line_edit.text()).width() + 8 + self.__border_width * 2
+            if self.__phone_code_line_edit.width() != w:
+                self.__phone_code_line_edit.setFixedWidth(w)
+
+            if self.__phone_code_line_edit.x() != text_start:
+                self.__phone_code_line_edit.move(text_start, 0)
+
+            self.setFixedWidth(text_start + self.__phone_code_line_edit.width())
+            self.geometry_changed.emit()
+            self.update()
 
     def __update_country_code(self):
         """Updates the country code"""

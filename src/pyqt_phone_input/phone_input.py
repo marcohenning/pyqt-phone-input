@@ -1,6 +1,6 @@
 from qtpy.QtCore import QMargins, Signal
 from qtpy.QtGui import QColor, QPalette, QFont
-from qtpy.QtWidgets import QWidget
+from qtpy.QtWidgets import QWidget, QLineEdit
 from .country_dropdown import CountryDropdown
 from .phone_line_edit import PhoneLineEdit
 
@@ -40,13 +40,17 @@ class PhoneInput(QWidget):
         self.__dropdown_item_selection_background_color = self.palette().color(QPalette.ColorRole.Highlight)
         self.__dropdown_border_color = None
 
-        # LineEdit
+        # Phone number LineEdit
         self.__phone_line_edit = PhoneLineEdit(self)
         self.__phone_line_edit.setBorderWidth(self.__border_width)
+
+        # Phone code LineEdit
+        self.__phone_code_line_edit = QLineEdit(self)
 
         # Dropdown
         self.__country_dropdown = CountryDropdown(self)
         self.__country_dropdown.setBorderWidth(self.__border_width)
+        self.__country_dropdown.setPhoneCodeLineEdit(self.__phone_code_line_edit)
         self.__country_dropdown.currentIndexChanged.connect(self.__handle_country_changed)
         self.__country_dropdown.show_popup.connect(self.__handle_popup_opened)
         self.__country_dropdown.hide_popup.connect(self.__handle_popup_closed)
@@ -67,6 +71,7 @@ class PhoneInput(QWidget):
         """Calculates everything related to widget geometry"""
 
         self.__phone_line_edit.setFixedSize(self.width(), self.height())
+        self.__phone_code_line_edit.setFixedHeight(self.height())
         self.__country_dropdown.setFixedHeight(self.height())
         self.__country_dropdown.view().setFixedWidth(self.__country_dropdown.minimumSizeHint().width())
 
@@ -108,7 +113,7 @@ class PhoneInput(QWidget):
                               self.__padding.top(),
                               self.__padding.right(),
                               self.__padding.bottom(),
-                              self.__padding.left() + self.__country_dropdown.width() + self.__border_width * 2,
+                              self.__padding.left() + self.__country_dropdown.width(),
                               selection_foreground_color.name(),
                               self.__selection_background_color.name()))
 
@@ -172,7 +177,7 @@ class PhoneInput(QWidget):
                               self.__padding.top(),
                               self.__padding.right(),
                               self.__padding.bottom(),
-                              self.__padding.left() + self.__country_dropdown.width() + self.__border_width * 2,
+                              self.__padding.left() + self.__country_dropdown.width(),
                               selection_foreground_color.name(),
                               self.__selection_background_color.name(),
                               self.__color.name() if self.__focused_color is None else self.__focused_color.name(),
@@ -183,6 +188,17 @@ class PhoneInput(QWidget):
                               self.__background_color.name() if self.__disabled_background_color is None else self.__disabled_background_color.name(),
                               self.__border_width,
                               self.__border_color.name() if self.__disabled_border_color is None else self.__disabled_border_color.name()))
+
+        self.__phone_code_line_edit.setStyleSheet('color: %s;'
+                                                  'background-color: transparent;'
+                                                  'border: %dpx solid transparent;'
+                                                  'border-radius: %dpx;'
+                                                  'padding: %d 0 %d 0px;'
+                                                  % (self.__color.name(),
+                                                     self.__border_width,
+                                                     self.__border_radius,
+                                                     self.__padding.top(),
+                                                     self.__padding.bottom()))
 
     def __update_combobox_style_sheet(self):
         """Updates the dropdown stylesheet according to the current values"""
@@ -669,7 +685,7 @@ class PhoneInput(QWidget):
         """
 
         self.__phone_line_edit.setFont(font)
-        self.__country_dropdown.setInputFont(font)
+        self.__phone_code_line_edit.setFont(font)
 
     def getDropdownFont(self) -> QFont:
         """Get the current font used for dropdown items

@@ -39,7 +39,7 @@ class PhoneLineEdit(QLineEdit):
         if self.__country_dropdown and self.__border_color_current:
             painter = QPainter(self)
             painter.setPen(self.__border_color_current)
-            x = self.__country_dropdown.width() + self.__border_width * 2
+            x = self.__country_dropdown.width()
 
             for i in range(self.__border_width):
                 painter.drawLine(x + i, 0, x + i, self.height() - 1)
