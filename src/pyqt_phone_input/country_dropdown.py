@@ -75,14 +75,14 @@ class CountryDropdown(QComboBox):
         """Method that gets called when the dropdown is opened"""
 
         super().showPopup()
-        self.popup_open = True
+        self.__popup_open = True
         self.show_popup.emit()
         
     def hidePopup(self):
         """Method that gets called when the dropdown is closed"""
 
         super().hidePopup()
-        self.popup_open = False
+        self.__popup_open = False
         self.hide_popup.emit()
 
     def resizeEvent(self, event):
@@ -164,7 +164,7 @@ class CountryDropdown(QComboBox):
         self.__calculate_geometry()
         self.update()
 
-    def getPopupOpen(self) -> bool:
+    def isDropdownOpen(self) -> bool:
         """Gets whether the dropdown is currently opened
 
         :return: whether the dropdown is currently opened

@@ -23,7 +23,7 @@ def test_initial_values(qtbot):
     assert phone_input.getDisabledColor() is None
     assert phone_input.getDisabledBackgroundColor() is None
     assert phone_input.getDisabledBorderColor() is None
-    assert phone_input.getDropdownItemHeightDynamic()
+    assert phone_input.isDropdownItemHeightDynamic()
     assert phone_input.getDropdownItemHeight() == 25
     assert phone_input.getDropdownItemSelectionForegroundColor() == QColor(255, 255, 255)
     assert phone_input.getDropdownItemSelectionBackgroundColor() == phone_input.palette().color(QPalette.ColorRole.Highlight)
@@ -33,6 +33,8 @@ def test_initial_values(qtbot):
 
 
 def test_set_country_and_input(qtbot):
+    """Test setting the country and input text"""
+
     phone_input = PhoneInput()
     qtbot.addWidget(phone_input)
 
@@ -45,6 +47,8 @@ def test_set_country_and_input(qtbot):
 
 
 def test_set_placeholder_text(qtbot):
+    """Test setting the placeholder text"""
+
     phone_input = PhoneInput()
     qtbot.addWidget(phone_input)
 
@@ -53,17 +57,21 @@ def test_set_placeholder_text(qtbot):
 
 
 def test_set_disabled(qtbot):
+    """Test enabling and disabling the widget"""
+
     phone_input = PhoneInput()
     qtbot.addWidget(phone_input)
 
     phone_input.setDisabled(True)
-    assert phone_input.getDisabled()
+    assert phone_input.isDisabled()
 
     phone_input.setDisabled(False)
-    assert not phone_input.getDisabled()
+    assert not phone_input.isDisabled()
 
 
 def test_set_color(qtbot):
+    """Test setting the text color"""
+
     phone_input = PhoneInput()
     qtbot.addWidget(phone_input)
 
@@ -73,6 +81,8 @@ def test_set_color(qtbot):
 
 
 def test_set_background_color(qtbot):
+    """Test setting the background color"""
+
     phone_input = PhoneInput()
     qtbot.addWidget(phone_input)
 
@@ -82,6 +92,8 @@ def test_set_background_color(qtbot):
 
 
 def test_set_border_color(qtbot):
+    """Test setting the border color"""
+
     phone_input = PhoneInput()
     qtbot.addWidget(phone_input)
 
@@ -91,6 +103,8 @@ def test_set_border_color(qtbot):
 
 
 def test_set_border_width(qtbot):
+    """Test setting the border width"""
+
     phone_input = PhoneInput()
     qtbot.addWidget(phone_input)
 
@@ -99,6 +113,8 @@ def test_set_border_width(qtbot):
 
 
 def test_set_border_radius(qtbot):
+    """Test setting the border radius"""
+
     phone_input = PhoneInput()
     qtbot.addWidget(phone_input)
 
@@ -107,6 +123,8 @@ def test_set_border_radius(qtbot):
 
 
 def test_set_padding(qtbot):
+    """Test setting the padding"""
+
     phone_input = PhoneInput()
     qtbot.addWidget(phone_input)
 
@@ -116,6 +134,8 @@ def test_set_padding(qtbot):
 
 
 def test_set_focused_color(qtbot):
+    """Test setting the focused text color"""
+
     phone_input = PhoneInput()
     qtbot.addWidget(phone_input)
 
@@ -125,6 +145,8 @@ def test_set_focused_color(qtbot):
 
 
 def test_set_focused_background_color(qtbot):
+    """Test setting the focused background color"""
+
     phone_input = PhoneInput()
     qtbot.addWidget(phone_input)
 
@@ -134,6 +156,8 @@ def test_set_focused_background_color(qtbot):
 
 
 def test_set_focused_border_color(qtbot):
+    """Test setting the focused border color"""
+
     phone_input = PhoneInput()
     qtbot.addWidget(phone_input)
 
@@ -143,6 +167,8 @@ def test_set_focused_border_color(qtbot):
 
 
 def test_set_disabled_color(qtbot):
+    """Test setting the disabled text color"""
+
     phone_input = PhoneInput()
     qtbot.addWidget(phone_input)
 
@@ -152,6 +178,8 @@ def test_set_disabled_color(qtbot):
 
 
 def test_set_disabled_background_color(qtbot):
+    """Test setting the disabled background color"""
+
     phone_input = PhoneInput()
     qtbot.addWidget(phone_input)
 
@@ -161,6 +189,8 @@ def test_set_disabled_background_color(qtbot):
 
 
 def test_set_disabled_border_color(qtbot):
+    """Test setting the disabled border color"""
+
     phone_input = PhoneInput()
     qtbot.addWidget(phone_input)
 
@@ -170,6 +200,8 @@ def test_set_disabled_border_color(qtbot):
 
 
 def test_set_text_selection_foreground_color(qtbot):
+    """Test setting the text selection foreground color"""
+
     phone_input = PhoneInput()
     qtbot.addWidget(phone_input)
 
@@ -179,6 +211,8 @@ def test_set_text_selection_foreground_color(qtbot):
 
 
 def test_set_text_selection_background_color(qtbot):
+    """Test setting the text selection background color"""
+
     phone_input = PhoneInput()
     qtbot.addWidget(phone_input)
 
@@ -188,17 +222,21 @@ def test_set_text_selection_background_color(qtbot):
 
 
 def test_set_dropdown_item_height_dynamic(qtbot):
+    """Test setting the dropdown item height to be dynamic or custom height"""
+
     phone_input = PhoneInput()
     qtbot.addWidget(phone_input)
 
     phone_input.setDropdownItemHeightDynamic(False)
-    assert not phone_input.getDropdownItemHeightDynamic()
+    assert not phone_input.isDropdownItemHeightDynamic()
 
     phone_input.setDropdownItemHeightDynamic(True)
-    assert phone_input.getDropdownItemHeightDynamic()
+    assert phone_input.isDropdownItemHeightDynamic()
 
 
 def test_set_dropdown_item_height(qtbot):
+    """Test setting the dropdown item height"""
+
     phone_input = PhoneInput()
     qtbot.addWidget(phone_input)
 
@@ -207,6 +245,8 @@ def test_set_dropdown_item_height(qtbot):
 
 
 def test_set_dropdown_item_selection_foreground_color(qtbot):
+    """Test setting the dropdown item selection foreground color"""
+
     phone_input = PhoneInput()
     qtbot.addWidget(phone_input)
 
@@ -216,6 +256,8 @@ def test_set_dropdown_item_selection_foreground_color(qtbot):
 
 
 def test_set_dropdown_item_selection_background_color(qtbot):
+    """Test setting the dropdown item selection background color"""
+
     phone_input = PhoneInput()
     qtbot.addWidget(phone_input)
 
@@ -225,6 +267,8 @@ def test_set_dropdown_item_selection_background_color(qtbot):
 
 
 def test_set_dropdown_border_color(qtbot):
+    """Test setting the dropdown border color"""
+
     phone_input = PhoneInput()
     qtbot.addWidget(phone_input)
 
@@ -234,6 +278,8 @@ def test_set_dropdown_border_color(qtbot):
 
 
 def test_set_font(qtbot):
+    """Test setting the font"""
+
     phone_input = PhoneInput()
     qtbot.addWidget(phone_input)
 
@@ -243,6 +289,8 @@ def test_set_font(qtbot):
 
 
 def test_set_dropdown_font(qtbot):
+    """Test setting the dropdown font"""
+
     phone_input = PhoneInput()
     qtbot.addWidget(phone_input)
 

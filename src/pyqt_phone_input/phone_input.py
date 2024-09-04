@@ -1,10 +1,8 @@
-import os
 from qtpy.QtCore import QMargins, Signal
-from qtpy.QtGui import QColor, QPalette, QIcon, QFont
+from qtpy.QtGui import QColor, QPalette, QFont
 from qtpy.QtWidgets import QWidget
 from .country_dropdown import CountryDropdown
 from .phone_line_edit import PhoneLineEdit
-from .countries import countries
 
 
 class PhoneInput(QWidget):
@@ -133,7 +131,7 @@ class PhoneInput(QWidget):
     def __handle_focus_out(self):
         """Handles LineEdit losing focus"""
 
-        if not self.__country_dropdown.getPopupOpen():
+        if not self.__country_dropdown.isDropdownOpen():
             self.__phone_line_edit.setCurrentBorderColor(self.__border_color)
 
     def __update_line_edit_style_sheet(self):
@@ -296,7 +294,7 @@ class PhoneInput(QWidget):
 
         self.__phone_line_edit.setPlaceholderText(text)
 
-    def getDisabled(self) -> bool:
+    def isDisabled(self) -> bool:
         """Get whether the widget is disabled
 
         :return: whether the widget is disabled
@@ -318,7 +316,7 @@ class PhoneInput(QWidget):
             self.__phone_line_edit.setCurrentBorderColor(
                 self.__border_color if self.__disabled_border_color is None else self.__disabled_border_color)
         else:
-            if self.__phone_line_edit.hasFocus() or self.__country_dropdown.getPopupOpen():
+            if self.__phone_line_edit.hasFocus() or self.__country_dropdown.isDropdownOpen():
                 self.__phone_line_edit.setCurrentBorderColor(
                     self.__border_color if self.__focused_border_color is None else self.__focused_border_color)
             else:
@@ -576,7 +574,7 @@ class PhoneInput(QWidget):
         self.__selection_background_color = color
         self.__update_line_edit_style_sheet()
 
-    def getDropdownItemHeightDynamic(self) -> bool:
+    def isDropdownItemHeightDynamic(self) -> bool:
         """Get whether the dropdown item height is always as high as the widget
 
         :return: whether the dropdown item height is always as high as the widget
