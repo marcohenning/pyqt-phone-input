@@ -1,3 +1,4 @@
+from qtpy import QtCore
 from qtpy.QtCore import QMargins, Signal
 from qtpy.QtGui import QColor, QPalette, QFont
 from qtpy.QtWidgets import QWidget, QLineEdit
@@ -46,6 +47,7 @@ class PhoneInput(QWidget):
 
         # Phone code LineEdit
         self.__phone_code_line_edit = QLineEdit(self)
+        self.__phone_code_line_edit.setFocusPolicy(QtCore.Qt.FocusPolicy.NoFocus)
 
         # Dropdown
         self.__country_dropdown = CountryDropdown(self)
@@ -117,6 +119,7 @@ class PhoneInput(QWidget):
                               selection_foreground_color.name(),
                               self.__selection_background_color.name()))
 
+        self.__update_phone_code_line_edit_focused()
         self.__phone_line_edit.setCurrentBorderColor(
             self.__border_color if self.__focused_border_color is None else self.__focused_border_color)
 
@@ -126,10 +129,13 @@ class PhoneInput(QWidget):
         self.__update_line_edit_style_sheet()
         if not self.__phone_line_edit.hasFocus():
             self.__phone_line_edit.setCurrentBorderColor(self.__border_color)
+        else:
+            self.__update_phone_code_line_edit_focused()
 
     def __handle_focus_in(self):
         """Handles LineEdit being focused"""
 
+        self.__update_phone_code_line_edit_focused()
         self.__phone_line_edit.setCurrentBorderColor(
             self.__border_color if self.__focused_border_color is None else self.__focused_border_color)
 
@@ -138,6 +144,7 @@ class PhoneInput(QWidget):
 
         if not self.__country_dropdown.isDropdownOpen():
             self.__phone_line_edit.setCurrentBorderColor(self.__border_color)
+            self.__update_line_edit_style_sheet()
 
     def __update_line_edit_style_sheet(self):
         """Updates the LineEdit stylesheet according to the current values"""
@@ -189,16 +196,17 @@ class PhoneInput(QWidget):
                               self.__border_width,
                               self.__border_color.name() if self.__disabled_border_color is None else self.__disabled_border_color.name()))
 
-        self.__phone_code_line_edit.setStyleSheet('color: %s;'
-                                                  'background-color: transparent;'
-                                                  'border: %dpx solid transparent;'
-                                                  'border-radius: %dpx;'
-                                                  'padding: %d 0 %d 0px;'
-                                                  % (self.__color.name(),
-                                                     self.__border_width,
-                                                     self.__border_radius,
-                                                     self.__padding.top(),
-                                                     self.__padding.bottom()))
+        if not self.__phone_line_edit.hasFocus() and not self.__country_dropdown.isDropdownOpen():
+            self.__phone_code_line_edit.setStyleSheet('color: %s;'
+                                                      'background-color: transparent;'
+                                                      'border: %dpx solid transparent;'
+                                                      'border-radius: %dpx;'
+                                                      'padding: %d 0 %d 0px;'
+                                                      % (self.__color.name(),
+                                                         self.__border_width,
+                                                         self.__border_radius,
+                                                         self.__padding.top(),
+                                                         self.__padding.bottom()))
 
     def __update_combobox_style_sheet(self):
         """Updates the dropdown stylesheet according to the current values"""
@@ -243,6 +251,18 @@ class PhoneInput(QWidget):
                                           self.height() if self.__dropdown_item_height_dynamic else self.__dropdown_item_height,
                                           dropdown_item_selection_color.name(),
                                           self.__dropdown_item_selection_background_color.name()))
+
+    def __update_phone_code_line_edit_focused(self):
+        self.__phone_code_line_edit.setStyleSheet('color: %s;'
+                                                  'background-color: transparent;'
+                                                  'border: %dpx solid transparent;'
+                                                  'border-radius: %dpx;'
+                                                  'padding: %d 0 %d 0px;'
+                                                  % (self.__color.name() if self.__focused_color is None else self.__focused_color.name(),
+                                                     self.__border_width,
+                                                     self.__border_radius,
+                                                     self.__padding.top(),
+                                                     self.__padding.bottom()))
 
     def resizeEvent(self, event):
         """Method that gets called every time the widget is resized
