@@ -20,6 +20,8 @@ class PhoneLineEdit(QLineEdit):
 
         # Connected country dropdown
         self.__country_dropdown = None
+        self.__border_color_current = None
+        self.__border_width = 0
 
         # Set validator to only allow numbers and spaces as input
         self.setValidator(QRegularExpressionValidator(QRegularExpression('[0-9 ]*')))
@@ -34,7 +36,7 @@ class PhoneLineEdit(QLineEdit):
         super().paintEvent(event)
 
         # Draw inside border to separate the LineEdit from connected dropdown
-        if self.__country_dropdown:
+        if self.__country_dropdown and self.__border_color_current:
             painter = QPainter(self)
             painter.setPen(self.__border_color_current)
             x = self.__country_dropdown.width() + self.__border_width * 2

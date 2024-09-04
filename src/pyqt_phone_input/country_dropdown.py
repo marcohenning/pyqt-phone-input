@@ -1,7 +1,8 @@
+import os
 import math
 from qtpy import QtCore
 from qtpy.QtCore import Signal, Qt
-from qtpy.QtGui import QPainter, QFont, QFontMetrics
+from qtpy.QtGui import QPainter, QFont, QFontMetrics, QIcon
 from qtpy.QtWidgets import QComboBox
 from .countries import countries
 
@@ -26,13 +27,20 @@ class CountryDropdown(QComboBox):
         self.__font_metrics = QFontMetrics(self.font())
         self.__icon_size = 0
         self.__border_width = 0
-        self.popup_open = False
+        self.__popup_open = False
         self.__current_country_code = ''
 
         # Initial settings
         self.setFocusPolicy(QtCore.Qt.FocusPolicy.NoFocus)
         self.view().setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.currentTextChanged.connect(self.__handle_current_item_changed)
+
+        # Add all countries to dropdown
+        self.__directory = os.path.dirname(os.path.realpath(__file__))
+        for country in countries:
+            self.addItem(
+                QIcon(self.__directory + '/flag_icons/{}.png'.format(country)),
+                '{} ({})'.format(countries[country][0], countries[country][1]))
 
         # Handle initial country
         self.__handle_current_item_changed()
@@ -155,6 +163,14 @@ class CountryDropdown(QComboBox):
         self.__input_font = font
         self.__calculate_geometry()
         self.update()
+
+    def getPopupOpen(self) -> bool:
+        """Gets whether the dropdown is currently opened
+
+        :return: whether the dropdown is currently opened
+        """
+
+        return self.__popup_open
 
     def __calculate_geometry(self):
         """Calculates everything related to widget geometry"""

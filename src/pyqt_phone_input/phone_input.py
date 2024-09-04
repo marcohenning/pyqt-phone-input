@@ -26,7 +26,7 @@ class PhoneInput(QWidget):
         self.__background_color = QColor(255, 255, 255)
         self.__border_color = self.palette().color(QPalette.ColorRole.Shadow)
         self.__border_width = 1
-        self.__border_radius = 3
+        self.__border_radius = 0
         self.__padding = QMargins(2, 0, 0, 0)
         self.__selection_foreground_color = None
         self.__selection_background_color = self.palette().color(QPalette.ColorRole.Highlight)
@@ -53,13 +53,6 @@ class PhoneInput(QWidget):
         self.__country_dropdown.show_popup.connect(self.__handle_popup_opened)
         self.__country_dropdown.hide_popup.connect(self.__handle_popup_closed)
         self.__country_dropdown.geometry_changed.connect(self.__update_line_edit_style_sheet)
-
-        # Add all countries to dropdown
-        self.__directory = os.path.dirname(os.path.realpath(__file__))
-        for country in countries:
-            self.__country_dropdown.addItem(
-                QIcon(self.__directory + '/flag_icons/{}.png'.format(country)),
-                '{} ({})'.format(countries[country][0], countries[country][1]))
 
         # Set up LineEdit
         self.__phone_line_edit.setCountryDropdown(self.__country_dropdown)
@@ -140,7 +133,7 @@ class PhoneInput(QWidget):
     def __handle_focus_out(self):
         """Handles LineEdit losing focus"""
 
-        if not self.__country_dropdown.popup_open:
+        if not self.__country_dropdown.getPopupOpen():
             self.__phone_line_edit.setCurrentBorderColor(self.__border_color)
 
     def __update_line_edit_style_sheet(self):
@@ -325,7 +318,7 @@ class PhoneInput(QWidget):
             self.__phone_line_edit.setCurrentBorderColor(
                 self.__border_color if self.__disabled_border_color is None else self.__disabled_border_color)
         else:
-            if self.__phone_line_edit.hasFocus() or self.__country_dropdown.popup_open:
+            if self.__phone_line_edit.hasFocus() or self.__country_dropdown.getPopupOpen():
                 self.__phone_line_edit.setCurrentBorderColor(
                     self.__border_color if self.__focused_border_color is None else self.__focused_border_color)
             else:
