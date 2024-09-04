@@ -9,10 +9,16 @@ from .countries import countries
 
 class PhoneInput(QWidget):
 
+    # Events
     country_changed = Signal()
     number_changed = Signal()
 
     def __init__(self, parent=None):
+        """Create a new PhoneInput instance
+
+        :param parent: the parent widget
+        """
+
         super(PhoneInput, self).__init__(parent)
 
         # Styling options
@@ -36,11 +42,11 @@ class PhoneInput(QWidget):
         self.__dropdown_item_selection_background_color = self.palette().color(QPalette.ColorRole.Highlight)
         self.__dropdown_border_color = None
 
-        # Phone number line edit
+        # LineEdit
         self.__phone_line_edit = PhoneLineEdit(self)
         self.__phone_line_edit.setBorderWidth(self.__border_width)
 
-        # Country dropdown
+        # Dropdown
         self.__country_dropdown = CountryDropdown(self)
         self.__country_dropdown.setBorderWidth(self.__border_width)
         self.__country_dropdown.currentIndexChanged.connect(self.__handle_country_changed)
@@ -48,36 +54,44 @@ class PhoneInput(QWidget):
         self.__country_dropdown.hide_popup.connect(self.__handle_popup_closed)
         self.__country_dropdown.geometry_changed.connect(self.__update_line_edit_style_sheet)
 
-        # Add countries to dropdown
+        # Add all countries to dropdown
         self.__directory = os.path.dirname(os.path.realpath(__file__))
         for country in countries:
             self.__country_dropdown.addItem(
                 QIcon(self.__directory + '/flag_icons/{}.png'.format(country)),
                 '{} ({})'.format(countries[country][0], countries[country][1]))
 
-        # Set up phone number line edit
+        # Set up LineEdit
         self.__phone_line_edit.setCountryDropdown(self.__country_dropdown)
         self.__phone_line_edit.textChanged.connect(self.__handle_number_changed)
         self.__phone_line_edit.focus_in.connect(self.__handle_focus_in)
         self.__phone_line_edit.focus_out.connect(self.__handle_focus_out)
 
-        # Update geometry and stylesheets
+        # Update geometry and style sheets
         self.__calculate_geometry()
         self.__update_line_edit_style_sheet()
         self.__update_combobox_style_sheet()
 
     def __calculate_geometry(self):
+        """Calculates everything related to widget geometry"""
+
         self.__phone_line_edit.setFixedSize(self.width(), self.height())
         self.__country_dropdown.setFixedHeight(self.height())
         self.__country_dropdown.view().setFixedWidth(self.__country_dropdown.minimumSizeHint().width())
 
     def __handle_country_changed(self):
+        """Emits country_changed event when dropdown index changes"""
+
         self.country_changed.emit()
 
     def __handle_number_changed(self):
+        """Emits number_changed event when LineEdit text changes"""
+
         self.number_changed.emit()
 
     def __handle_popup_opened(self):
+        """Handles dropdown popup being opened"""
+
         selection_foreground_color = None
         if self.__selection_foreground_color:
             selection_foreground_color = self.__selection_foreground_color
@@ -111,19 +125,27 @@ class PhoneInput(QWidget):
             self.__border_color if self.__focused_border_color is None else self.__focused_border_color)
 
     def __handle_popup_closed(self):
+        """Handles dropdown popup being closed"""
+
         self.__update_line_edit_style_sheet()
         if not self.__phone_line_edit.hasFocus():
             self.__phone_line_edit.setCurrentBorderColor(self.__border_color)
 
     def __handle_focus_in(self):
+        """Handles LineEdit being focused"""
+
         self.__phone_line_edit.setCurrentBorderColor(
             self.__border_color if self.__focused_border_color is None else self.__focused_border_color)
 
     def __handle_focus_out(self):
+        """Handles LineEdit losing focus"""
+
         if not self.__country_dropdown.popup_open:
             self.__phone_line_edit.setCurrentBorderColor(self.__border_color)
 
     def __update_line_edit_style_sheet(self):
+        """Updates the LineEdit stylesheet according to the current values"""
+
         selection_foreground_color = None
         if self.__selection_foreground_color:
             selection_foreground_color = self.__selection_foreground_color
@@ -172,6 +194,8 @@ class PhoneInput(QWidget):
                               self.__border_color.name() if self.__disabled_border_color is None else self.__disabled_border_color.name()))
 
     def __update_combobox_style_sheet(self):
+        """Updates the dropdown stylesheet according to the current values"""
+
         dropdown_item_selection_color = None
         if self.__dropdown_item_selection_color:
             dropdown_item_selection_color = self.__dropdown_item_selection_color
@@ -214,35 +238,85 @@ class PhoneInput(QWidget):
                                           self.__dropdown_item_selection_background_color.name()))
 
     def resizeEvent(self, event):
+        """Method that gets called every time the widget is resized
+
+        :param event: event sent by PyQt
+        """
+
         self.__calculate_geometry()
         self.__update_line_edit_style_sheet()
         self.__update_combobox_style_sheet()
 
     def getCountry(self) -> str:
+        """Get the current country
+
+        :return: country code (i.e. 'us')
+        """
+
         return self.__country_dropdown.getCountry()
 
-    def getCountryCode(self) -> str:
-        return self.__country_dropdown.getCountryCode()
+    def getCountryPhoneCode(self) -> str:
+        """Get the phone code of the current country
+
+        :return: phone code (i.e. '+1')
+        """
+
+        return self.__country_dropdown.getCountryPhoneCode()
 
     def setCountry(self, country: str):
+        """Set the country
+
+        :param country: new country
+        """
+
         self.__country_dropdown.setCountry(country)
 
     def getPhoneNumber(self) -> str:
-        return self.getCountryCode() + self.__phone_line_edit.text().replace(' ', '')
+        """Get the current phone number (no blank spaces)
 
-    def setPhoneNumber(self, phone_number: str):
-        self.__phone_line_edit.setText(phone_number)
+        :return: phone number
+        """
+
+        return self.getCountryPhoneCode() + self.__phone_line_edit.text().replace(' ', '')
+
+    def setInput(self, input_number: str):
+        """Set the LineEdit's input
+
+        :param input_number: new input
+        """
+
+        self.__phone_line_edit.setText(input_number)
 
     def getPlaceholderText(self) -> str:
+        """Get the current placeholder text
+
+        :return: placeholder text
+        """
+
         return self.__phone_line_edit.placeholderText()
 
     def setPlaceholderText(self, text: str):
+        """Set the placeholder text
+
+        :param text: new placeholder text
+        """
+
         self.__phone_line_edit.setPlaceholderText(text)
 
     def getDisabled(self) -> bool:
+        """Get whether the widget is disabled
+
+        :return: whether the widget is disabled
+        """
+
         return not self.__country_dropdown.isEnabled()
 
     def setDisabled(self, disabled: bool):
+        """Enable or disable the widget
+
+        :param disabled: whether the widget should be disabled
+        """
+
         self.__phone_line_edit.setDisabled(disabled)
         self.__country_dropdown.setDisabled(disabled)
 
@@ -350,17 +424,17 @@ class PhoneInput(QWidget):
         self.__update_combobox_style_sheet()
 
     def getPadding(self) -> QMargins:
-        """Get the current padding of the widget
+        """Get the current padding of the LineEdit
 
-        :return: current padding
+        :return: current padding of the LineEdit
         """
 
         return self.__padding
 
     def setPadding(self, padding: QMargins):
-        """Set the padding of the widget
+        """Set the padding of the LineEdit
 
-        :param padding: padding of the widget
+        :param padding: new padding of the LineEdit
         """
 
         self.__padding = padding
@@ -476,52 +550,148 @@ class PhoneInput(QWidget):
         self.__update_combobox_style_sheet()
 
     def getTextSelectionForegroundColor(self) -> QColor:
+        """Get the current text selection foreground color
+
+        :return: text selection foreground color
+        """
+
         return self.__selection_foreground_color
 
     def setTextSelectionForegroundColor(self, color: QColor):
+        """Set the text selection foreground color
+
+        :param color: new text selection foreground color
+        """
+
         self.__selection_foreground_color = color
         self.__update_line_edit_style_sheet()
 
     def getTextSelectionBackgroundColor(self) -> QColor:
+        """Get the current text selection background color
+
+        :return: text selection background color
+        """
+
         return self.__selection_background_color
 
     def setTextSelectionBackgroundColor(self, color: QColor):
+        """Set the text selection background color
+
+        :param color: new text selection background color
+        """
+
         self.__selection_background_color = color
         self.__update_line_edit_style_sheet()
 
     def getDropdownItemHeightDynamic(self) -> bool:
+        """Get whether the dropdown item height is always as high as the widget
+
+        :return: whether the dropdown item height is always as high as the widget
+        """
+
         return self.__dropdown_item_height_dynamic
 
     def setDropdownItemHeightDynamic(self, dynamic: bool):
+        """Set whether the dropdown item height should always be as high as the widget
+
+        :param dynamic: whether the dropdown item height should always be as high as the widget
+        """
+
         self.__dropdown_item_height_dynamic = dynamic
 
     def getDropdownItemHeight(self) -> int:
+        """Get the current dropdown item height
+
+        :return: dropdown item height
+        """
+
         return self.__dropdown_item_height
 
     def setDropdownItemHeight(self, height: int):
+        """Set the dropdown item height
+
+        :param height: new dropdown item height
+        """
+
         self.__dropdown_item_height = height
 
     def getDropdownItemSelectionForegroundColor(self) -> QColor:
+        """Get the current dropdown item selection foreground color
+
+        :return: dropdown item selection foreground color
+        """
+
         return self.__dropdown_item_selection_color
 
     def setDropdownItemSelectionForegroundColor(self, color: QColor):
+        """Set the dropdown item selection foreground color
+
+        :param color: new dropdown item selection foreground color
+        """
+
         self.__dropdown_item_selection_color = color
 
     def getDropdownItemSelectionBackgroundColor(self) -> QColor:
+        """Get the current dropdown item selection background color
+
+        :return: dropdown item selection background color
+        """
+
         return self.__dropdown_item_selection_background_color
 
     def setDropdownItemSelectionBackgroundColor(self, color: QColor):
+        """Set the current dropdown item selection background color
+
+        :param color: new dropdown item selection background color
+        """
+
         self.__dropdown_item_selection_background_color = color
 
     def getDropdownBorderColor(self) -> QColor:
+        """Get the current dropdown border color
+
+        :return: dropdown border color
+        """
+
         return self.__dropdown_border_color
 
     def setDropdownBorderColor(self, color: QColor):
+        """Set the dropdown border color
+
+        :param color: new dropdown border color
+        """
+
         self.__dropdown_border_color = color
 
+    def getFont(self) -> QFont:
+        """Get the current font used for LineEdit text and dropdown selected item
+
+        :return: font used for LineEdit text and dropdown selected item
+        """
+
+        return self.__phone_line_edit.font()
+
     def setFont(self, font: QFont):
+        """Set the font used for LineEdit text and dropdown selected item
+
+        :param font: new font used for LineEdit text and dropdown selected item
+        """
+
         self.__phone_line_edit.setFont(font)
         self.__country_dropdown.setInputFont(font)
 
+    def getDropdownFont(self) -> QFont:
+        """Get the current font used for dropdown items
+
+        :return: font used for dropdown items
+        """
+
+        return self.__country_dropdown.font()
+
     def setDropdownFont(self, font: QFont):
+        """Set the font used for dropdown items
+
+        :param font: new font used for dropdown items
+        """
+
         self.__country_dropdown.setFont(font)
