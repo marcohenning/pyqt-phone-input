@@ -197,16 +197,22 @@ class PhoneInput(QWidget):
                               self.__border_color.name() if self.__disabled_border_color is None else self.__disabled_border_color.name()))
 
         if not self.__phone_line_edit.hasFocus() and not self.__country_dropdown.isDropdownOpen():
-            self.__phone_code_line_edit.setStyleSheet('color: %s;'
+            self.__phone_code_line_edit.setStyleSheet('QLineEdit {'
+                                                      'color: %s;'
                                                       'background-color: transparent;'
                                                       'border: %dpx solid transparent;'
                                                       'border-radius: %dpx;'
                                                       'padding: %d 0 %d 0px;'
+                                                      '}'
+                                                      'QLineEdit:disabled {'
+                                                      'color: %s;'
+                                                      '}'
                                                       % (self.__color.name(),
                                                          self.__border_width,
                                                          self.__border_radius,
                                                          self.__padding.top(),
-                                                         self.__padding.bottom()))
+                                                         self.__padding.bottom(),
+                                                         self.__color.name() if self.__disabled_color is None else self.__disabled_color.name()))
 
     def __update_combobox_style_sheet(self):
         """Updates the dropdown stylesheet according to the current values"""
@@ -345,6 +351,7 @@ class PhoneInput(QWidget):
         """
 
         self.__phone_line_edit.setDisabled(disabled)
+        self.__phone_code_line_edit.setDisabled(disabled)
         self.__country_dropdown.setDisabled(disabled)
 
         if disabled:
