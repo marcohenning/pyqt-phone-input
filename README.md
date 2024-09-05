@@ -94,6 +94,8 @@ phone_input.setBorderRadius(5)
 phone_input.setPlaceholderText('Phone number')
 ```
 
+**<br>All methods:**
+
 | Method                                                         | Description                                                                                   |
 |----------------------------------------------------------------|-----------------------------------------------------------------------------------------------|
 | `getCountry(self)`                                             | Get the country code of the currently selected country                                        |
