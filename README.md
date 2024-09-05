@@ -8,7 +8,7 @@
 
 A clean and modern phone number input widget for PyQt and PySide.
 
-gif
+![Main](https://github.com/user-attachments/assets/b0d91e9a-a38f-45b9-9886-e1422c298b2c)
 
 ## About
 
