@@ -1,6 +1,10 @@
 # PyQt Phone Input
 
-shields
+[![PyPI](https://img.shields.io/badge/pypi-v1.0.0-blue)](https://pypi.org/project/pyqt-phone-input)
+[![Python](https://img.shields.io/badge/python-3.7+-blue)](https://github.com/marcohenning/pyqt-phone-input)
+[![License](https://img.shields.io/badge/license-MIT-green)](https://github.com/marcohenning/pyqt-phone-input/blob/master/LICENSE)
+[![Coverage](https://img.shields.io/badge/coverage-90%25-neon)](https://github.com/marcohenning/pyqt-phone-input)
+[![Build](https://img.shields.io/badge/build-passing-neon)](https://github.com/marcohenning/pyqt-phone-input)
 
 A clean and modern phone number input widget for PyQt and PySide.
 
@@ -8,7 +12,7 @@ gif
 
 ## About
 
-The widget features a dropdown to select the country and a text field to input a phone number, both of which are highly customizable. The country dropdown offers exactly the same 235 options that Google's phone inputs do and displays the selected country's flag as well as its phone code. The flag icons used are modified versions of the icons available on [this repository](https://github.com/lipis/flag-icons).
+The widget features a dropdown to select the country and a text field to input a phone number, both of which are highly customizable. The country dropdown offers exactly the same 235 countries / territories that Google's phone inputs do and displays the selected country's flag as well as its phone code. The flag icons used are modified versions of the icons available on [this repository](https://github.com/lipis/flag-icons).
 
 ## Installation
 
@@ -19,45 +23,110 @@ pip install pyqt-phone-input
 ## Example
 
 ```python
+from PyQt6.QtWidgets import QMainWindow
+from pyqt_phone_input import PhoneInput
+
+
+class Window(QMainWindow):
+
+    def __init__(self):
+        super().__init__(parent=None)
+
+        # Phone input
+        self.phone_input = PhoneInput(self)
+        self.phone_input.setBorderRadius(5)
+        self.phone_input.setCountry('us')
+        self.phone_input.setPlaceholderText('Phone number')
 ```
 
 ## Documentation
 
 > **IMPORTANT:** <br>Styling of the widget must not be done by setting the stylesheet manually as the widget calculates the stylesheet itself and overrides it. Use the provided methods such as `setBackgroundColor()`, `setFocusedBackgroundColor()` and `setDisabledBackgroundColor()` instead.
 
-| Method                                                         | Description |
-|----------------------------------------------------------------|-------------|
-| `getCountry(self)`                                             | X           |
-| `getCountryPhoneCode(self)`                                    | X           |
-| `setCountry(self, country: str)`                               | X           |
-| `getPhoneNumber(self)`                                         | X           |
-| `setInput(self, input_number: str)`                            | X           |
-| `getPlaceholderText(self)`                                     | X           |
-| `setPlaceholderText(self, text: str)`                          | X           |
-| `isDisabled(self)`                                             | X           |
-| `setDisabled(self, disabled: bool)`                            | X           |
-| `setColor(self, color: QColor)`                                | X           |
-| `setBackgroundColor(self, color: QColor)`                      | X           |
-| `setBorderColor(self, color: QColor)`                          | X           |
-| `setBorderWidth(self, width: int)`                             | X           |
-| `setBorderRadius(self, radius: int)`                           | X           |
-| `setPadding(self, padding: QMargins)`                          | X           |
-| `setFocusedColor(self, color: QColor)`                         | X           |
-| `setFocusedBackgroundColor(self, color: QColor)`               | X           |
-| `setFocusedBorderColor(self, color: QColor)`                   | X           |
-| `setDisabledColor(self, color: QColor)`                        | X           |
-| `setDisabledBackgroundColor(self, color: QColor)`              | X           |
-| `setDisabledBorderColor(self, color: QColor)`                  | X           |
-| `setTextSelectionForegroundColor(self, color: QColor)`         | X           |
-| `setTextSelectionBackgroundColor(self, color: QColor)`         | X           |
-| `isDropdownItemHeightDynamic(self)`                            | X           |
-| `setDropdownItemHeightDynamic(self, dynamic: bool)`            | X           |
-| `setDropdownItemHeight(self, height: int)`                     | X           |
-| `setDropdownItemSelectionForegroundColor(self, color: QColor)` | X           |
-| `setDropdownItemSelectionBackgroundColor(self, color: QColor)` | X           |
-| `setDropdownBorderColor(self, color: QColor)`                  | X           |
-| `setFont(self, font: QFont)`                                   | X           |
-| `setDropdownFont(self, font: QFont)`                           | X           |
+* **Setting the current country:**
+```python
+phone_input.setCountry('us')  # United States
+```
+
+* **Getting the current country:**
+```python
+phone_input.getCountry()  # 'us'
+```
+
+* **Getting the current phone code:**
+```python
+phone_input.getCountryPhoneCode()  # '+1'
+```
+
+* **Getting the phone number:**
+```python
+# country = 'us', input = '1234567'
+phone_input.getPhoneNumber()  # '+11234567'
+```
+
+* **Setting the text color:**
+```python
+phone_input.setColor(QColor(0, 0, 0))
+```
+
+* **Setting the background color:**
+```python
+phone_input.setBackgroundColor(QColor(255, 255, 255))
+```
+
+* **Setting the border color:**
+```python
+phone_input.setBorderColor(QColor(0, 0, 0))
+```
+
+* **Setting the border width:**
+```python
+phone_input.setBorderWidth(1)
+```
+
+* **Setting the border radius:**
+```python
+phone_input.setBorderRadius(5)
+```
+
+* **Setting the placeholder text:**
+```python
+phone_input.setPlaceholderText('Phone number')
+```
+
+| Method                                                         | Description                                                                                   |
+|----------------------------------------------------------------|-----------------------------------------------------------------------------------------------|
+| `getCountry(self)`                                             | Get the country code of the currently selected country                                        |
+| `getCountryPhoneCode(self)`                                    | Get the phone code of the currently selected country                                          |
+| `setCountry(self, country: str)`                               | Set the current country (by country code)                                                     |
+| `getPhoneNumber(self)`                                         | Get the phone number (Returns country code and number from text field without any spaces)     |
+| `setInput(self, input_number: str)`                            | Set the text field's input                                                                    |
+| `getPlaceholderText(self)`                                     | Get the text field's current placeholder text                                                 |
+| `setPlaceholderText(self, text: str)`                          | Set the text field's current placeholder text                                                 |
+| `isDisabled(self)`                                             | Get whether the widget is currently disabled                                                  |
+| `setDisabled(self, disabled: bool)`                            | Set whether the widget should be disabled                                                     |
+| `setColor(self, color: QColor)`                                | Set the regular color of the text                                                             |
+| `setBackgroundColor(self, color: QColor)`                      | Set the regular color of the background                                                       |
+| `setBorderColor(self, color: QColor)`                          | Set the regular color of the border                                                           |
+| `setBorderWidth(self, width: int)`                             | Set the width of the border                                                                   |
+| `setBorderRadius(self, radius: int)`                           | Set the radius of the border                                                                  |
+| `setPadding(self, padding: QMargins)`                          | Set the padding of the text field                                                             |
+| `setFocusedColor(self, color: QColor)`                         | Set the text color for when the widget is focused                                             |
+| `setFocusedBackgroundColor(self, color: QColor)`               | Set the background color for when the widget is focused                                       |
+| `setFocusedBorderColor(self, color: QColor)`                   | Set the border color for when the widget is focused                                           |
+| `setDisabledColor(self, color: QColor)`                        | Set the text color for when the widget is disabled                                            |
+| `setDisabledBackgroundColor(self, color: QColor)`              | Set the background color for when the widget is disabled                                      |
+| `setDisabledBorderColor(self, color: QColor)`                  | Set the border color for when the widget is disabled                                          |
+| `setTextSelectionForegroundColor(self, color: QColor)`         | Set the foreground color of the text field's selection                                        |
+| `setTextSelectionBackgroundColor(self, color: QColor)`         | Set the background color of the text field's selection                                        |
+| `isDropdownItemHeightDynamic(self)`                            | Get whether the dropdown item height is dynamic (always the same height as the widget)        |
+| `setDropdownItemHeightDynamic(self, dynamic: bool)`            | Set whether the dropdown item height should be dynamic (always the same height as the widget) |
+| `setDropdownItemHeight(self, height: int)`                     | Set the dropdown item height (will only be used if dynamic height is disabled)                |
+| `setDropdownItemSelectionForegroundColor(self, color: QColor)` | Set the foreground color of the selected dropdown item                                        |
+| `setDropdownItemSelectionBackgroundColor(self, color: QColor)` | Set the background color of the selected dropdown item                                        |
+| `setDropdownBorderColor(self, color: QColor)`                  | Set the border color of the dropdown window                                                   |
+| `setFont(self, font: QFont)`                                   | Set the font used by text field and phone code of currently selected country                  |
+| `setDropdownFont(self, font: QFont)`                           | Set the font used for the dropdown items                                                      |
 
 ## Countries
 
