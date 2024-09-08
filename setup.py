@@ -6,13 +6,14 @@ with open('README.md', 'r') as fh:
 
 setup(
     name='pyqt-phone-input',
-    version='1.0.0',
+    version='1.0.1',
     author='Marco Henning',
     license='MIT',
     packages=find_namespace_packages(where="src"),
     package_dir={"": "src"},
     package_data={
-        'pyqt_phone_input.flag_icons': ['*.png']
+        'pyqt_phone_input.flag_icons': ['*.png'],
+        'pyqt_phone_input.hooks': ['*.py']
     },
     install_requires=[
         'QtPy>=2.4.1'
