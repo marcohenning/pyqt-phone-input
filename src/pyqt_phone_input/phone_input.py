@@ -44,6 +44,7 @@ class PhoneInput(QWidget):
         # Phone number LineEdit
         self.__phone_line_edit = PhoneLineEdit(self)
         self.__phone_line_edit.setBorderWidth(self.__border_width)
+        self.__phone_line_edit.setCurrentBorderColor(self.__border_color)
 
         # Phone code LineEdit
         self.__phone_code_line_edit = QLineEdit(self)
