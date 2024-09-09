@@ -1,6 +1,6 @@
 # PyQt Phone Input
 
-[![PyPI](https://img.shields.io/badge/pypi-v1.0.1-blue)](https://pypi.org/project/pyqt-phone-input)
+[![PyPI](https://img.shields.io/badge/pypi-v1.0.2-blue)](https://pypi.org/project/pyqt-phone-input)
 [![Python](https://img.shields.io/badge/python-3.7+-blue)](https://github.com/marcohenning/pyqt-phone-input)
 [![License](https://img.shields.io/badge/license-MIT-green)](https://github.com/marcohenning/pyqt-phone-input/blob/master/LICENSE)
 [![Coverage](https://img.shields.io/badge/coverage-90%25-neon)](https://github.com/marcohenning/pyqt-phone-input)
